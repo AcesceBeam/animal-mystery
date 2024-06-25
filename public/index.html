@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Mystery Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f8ff;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 900px;
+        }
+        .correct-answers {
+            margin-right: 20px;
+            padding: 10px;
+            border-right: 1px solid #ccc;
+            flex: 1;
+        }
+        .correct-answers h2 {
+            margin-top: 0;
+        }
+        .game-area {
+            text-align: center;
+            flex: 2;
+        }
+        h1 {
+            color: #333;
+            margin-top: 0;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .result, .score {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .progress {
+            height: 20px;
+            background-color: #28a745;
+            width: 0;
+        }
+        .hint {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #555;
+        }
+        .reset-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            border: none;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .reset-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="correct-answers">
+            <h2>Correct Answers</h2>
+            <ul id="correct-answers-list"></ul>
+        </div>
+        <div class="game-area">
+            <h1>Animal Mystery Game</h1>
+            <div id="room-controls">
+                <input type="text" id="room-id" placeholder="Enter room ID">
+                <button onclick="joinRoom()">Join Room</button>
+                <button onclick="createRoom()">Create Room</button>
+            </div>
+            <p>Guess the animal based on the clue:</p>
+            <p id="clue">I am known as the king of the jungle.</p>
+            <input type="text" id="guess" placeholder="Your guess here">
+            <button onclick="checkGuess()">Submit</button>
+            <div class="result" id="result"></div>
+            <div class="score" id="score"></div>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <button class="reset-btn" onclick="resetGame()">Reset Game</button>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        let shuffledClues, currentClueIndex, score;
+
+        const clues = [
+            { clue: "I am known as the king of the jungle.", answer: "lion" },
+            { clue: "I have black and white stripes.", answer: "zebra" },
+            { clue: "I am the largest mammal on earth.", answer: "whale" },
+            { clue: "I am a bird that cannot fly.", answer: "penguin" },
+            { clue: "I have a long trunk and big ears.", answer: "elephant" },
+            { clue: "I am the fastest land animal.", answer: "cheetah" },
+            { clue: "I am a domesticated animal known for barking.", answer: "dog" },
+            { clue: "I am known for my ability to change colors.", answer: "chameleon" },
+            { clue: "I am a large bear-like animal known for eating bamboo.", answer: "panda" },
+            { clue: "I am a large reptile with a powerful bite.", answer: "crocodile" },
+            { clue: "I am a small, hopping mammal with long ears.", answer: "rabbit" },
+            { clue: "I am a flightless bird native to Australia.", answer: "emu" },
+            { clue: "I am a sea creature with eight legs.", answer: "octopus" },
+            { clue: "I am a slow-moving reptile with a shell.", answer: "turtle" },
+            { clue: "I am known for my spots and long neck.", answer: "giraffe" },
+            { clue: "I am a large cat with black rosettes on my fur.", answer: "leopard" },
+            { clue: "I am a marsupial native to Australia.", answer: "kangaroo" },
+            { clue: "I am a small, burrowing mammal with spines.", answer: "hedgehog" },
+            { clue: "I am a bird known for mimicking sounds.", answer: "parrot" },
+            { clue: "I am a large mammal with tusks and a trunk.", answer: "elephant" },
+            { clue: "I am known for building dams.", answer: "beaver" },
+            { clue: "I am a bird of prey with sharp talons.", answer: "eagle" },
+            { clue: "I am a nocturnal bird known for my hooting.", answer: "owl" },
+            { clue: "I am a large mammal known for my thick fur and hibernation.", answer: "bear" },
+            { clue: "I am a small primate known for swinging from trees.", answer: "monkey" },
+            { clue: "I am a marine mammal known for my intelligence and playfulness.", answer: "dolphin" },
+            { clue: "I am a reptile known for shedding my skin.", answer: "snake" },
+            { clue: "I am a large bird with a colorful fan-like tail.", answer: "peacock" },
+            { clue: "I am a domesticated animal known for producing milk.", answer: "cow" }
+        ];
+
+        function initGame() {
+            shuffledClues = shuffle(clues);
+            currentClueIndex = 0;
+            score = 0;
+            document.getElementById('clue').textContent = shuffledClues[currentClueIndex].clue;
+            document.getElementById('guess').value = '';
+            document.getElementById('result').textContent = '';
+            document.getElementById('score').textContent = '';
+            document.getElementById('correct-answers-list').innerHTML = '';
+            document.getElementById('progress').style.width = '0%';
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function checkGuess() {
+            const userGuess = document.getElementById('guess').value.toLowerCase();
+            const resultDiv = document.getElementById('result');
+            const scoreDiv = document.getElementById('score');
+            const correctAnswersList = document.getElementById('correct-answers-list');
+            const progressBar = document.getElementById('progress');
+
+            if (userGuess === shuffledClues[currentClueIndex].answer) {
+                score++;
+                resultDiv.textContent = "Correct!";
+                resultDiv.style.color = 'green';
+                const listItem = document.createElement('li');
+                listItem.textContent = shuffledClues[currentClueIndex].answer;
+                correctAnswersList.appendChild(listItem);
+                socket.emit('correctAnswer', shuffledClues[currentClueIndex].answer);
+            } else {
+                resultDiv.textContent = "Wrong guess. Try again!";
+                resultDiv.style.color = 'red';
+            }
+
+            currentClueIndex++;
+            document.getElementById('guess').value = "";
+
+            if (currentClueIndex < shuffledClues.length) {
+                document.getElementById('clue').textContent = shuffledClues[currentClueIndex].clue;
+            } else {
+                document.getElementById('clue').textContent = "";
+                resultDiv.textContent = "";
+                scoreDiv.textContent = `Game over! Your score is ${score}/${shuffledClues.length}.`;
+            }
+
+            progressBar.style.width = `${(currentClueIndex / shuffledClues.length) * 100}%`;
+        }
+
+        function resetGame() {
+            initGame();
+            socket.emit('resetGame');
+        }
+
+        function createRoom() {
+            socket.emit('createRoom');
+        }
+
+        function joinRoom() {
+            const roomId = document.getElementById('room-id').value;
+            socket.emit('joinRoom', roomId);
+        }
+
+        socket.on('roomCreated', (roomId) => {
+            alert(`Room created. Room ID: ${roomId}`);
+            document.getElementById('room-id').value = roomId;
+        });
+
+        socket.on('updateClue', (clue) => {
+            document.getElementById('clue').textContent = clue;
+        });
+
+        socket.on('correctAnswer', (answer) => {
+            const correctAnswersList = document.getElementById('correct-answers-list');
+            const listItem = document.createElement('li');
+            listItem.textContent = answer;
+            correctAnswersList.appendChild(listItem);
+        });
+
+        socket.on('resetGame', () => {
+            initGame();
+        });
+
+        initGame();
+    </script>
+</body>
+</html>
