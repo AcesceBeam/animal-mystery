@@ -10,13 +10,79 @@
         }
         .container {
             display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            margin: 20px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 900px;
         }
-        .game {
-            width: 70%;
+        .correct-answers {
+            margin-right: 20px;
+            padding: 10px;
+            border-right: 1px solid #ccc;
+            flex: 1;
         }
+        .correct-answers h2 {
+            margin-top: 0;
+        }
+        .game-area {
+            text-align: center;
+            flex: 2;
+        }
+        h1 {
+            color: #333;
+            margin-top: 0;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .result, .score {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .progress {
+            height: 20px;
+            background-color: #28a745;
+            width: 0;
+        }
+        .hint {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #555;
+        }
+        .reset-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            border: none;
+            background-color: #dc3545;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+         }
         .leaderboard {
             width: 25%;
             border-left: 2px solid #000;
@@ -47,6 +113,9 @@
             width: 0;
             height: 20px;
             background-color: green;
+        }
+        .reset-btn:hover {
+            background-color: #c82333;
         }
     </style>
 </head>
