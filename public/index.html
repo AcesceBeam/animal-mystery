@@ -5,125 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Animal Mystery Game</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        #game-container {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #f0f8ff;
-            margin: 0;
         }
-        .container {
-            display: flex;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 80%;
-            max-width: 900px;
+        #game {
+            flex: 3;
         }
-        .correct-answers {
-            margin-right: 20px;
-            padding: 10px;
-            border-right: 1px solid #ccc;
+        #leaderboard {
             flex: 1;
+            margin-left: 20px;
         }
-        .correct-answers h2 {
-            margin-top: 0;
+        #correct-answers-list {
+            list-style-type: none;
         }
-        .game-area {
-            text-align: center;
-            flex: 2;
-        }
-        h1 {
-            color: #333;
-            margin-top: 0;
-        }
-        input[type="text"] {
-            padding: 10px;
-            width: 300px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-bottom: 10px;
-        }
-        button {
-            padding: 10px 20px;
-            border: none;
-            background-color: #28a745;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .result, .score {
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .progress-bar {
-            width: 100%;
-            background-color: #e0e0e0;
-            border-radius: 5px;
-            overflow: hidden;
-            margin-top: 20px;
-        }
-        .progress {
+        #progress {
             height: 20px;
-            background-color: #28a745;
-            width: 0;
-        }
-        .hint {
-            margin-top: 10px;
-            font-size: 16px;
-            color: #555;
-        }
-        .reset-btn {
-            margin-top: 20px;
-            padding: 10px 20px;
-            border: none;
-            background-color: #dc3545;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .reset-btn:hover {
-            background-color: #c82333;
+            background-color: green;
+            width: 0%;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="correct-answers">
-            <h2>Correct Answers</h2>
-            <ul id="correct-answers-list"></ul>
-        </div>
-        <div class="game-area">
+    <div id="game-container">
+        <div id="game">
             <h1>Animal Mystery Game</h1>
-            <div id="room-controls">
-                <input type="text" id="room-id" placeholder="Enter room ID">
-                <button onclick="joinRoom()">Join Room</button>
-                <button onclick="createRoom()">Create Room</button>
-            </div>
-            <p>Guess the animal based on the clue:</p>
-            <p id="clue">I am known as the king of the jungle.</p>
-            <input type="text" id="guess" placeholder="Your guess here">
+            <div id="clue"></div>
+            <input type="text" id="guess" placeholder="Your guess">
             <button onclick="checkGuess()">Submit</button>
-            <div class="result" id="result"></div>
-            <div class="score" id="score"></div>
-            <div class="progress-bar">
-                <div class="progress" id="progress"></div>
-            </div>
-            <button class="reset-btn" onclick="resetGame()">Reset Game</button>
+            <div id="result"></div>
+            <div id="score"></div>
+            <ul id="correct-answers-list"></ul>
+            <div id="progress"></div>
+            <button onclick="resetGame()">Reset Game</button>
+            <button onclick="createRoom()">Create Room</button>
+            <input type="text" id="room-id" placeholder="Room ID">
+            <button onclick="joinRoom()">Join Room</button>
+        </div>
+        <div id="leaderboard">
+            <h2>Leaderboard</h2>
+            <ul id="leaderboard-list"></ul>
         </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io(window.location.origin);
+        const socket = io();
 
         let shuffledClues, currentClueIndex, score;
 
@@ -169,6 +95,7 @@
             document.getElementById('score').textContent = '';
             document.getElementById('correct-answers-list').innerHTML = '';
             document.getElementById('progress').style.width = '0%';
+            document.getElementById('leaderboard-list').innerHTML = '';
         }
 
         function shuffle(array) {
@@ -247,7 +174,17 @@
             initGame();
         });
 
-        initGame();
+        socket.on('updateLeaderboard', (clients) => {
+            const leaderboardList = document.getElementById('leaderboard-list');
+            leaderboardList.innerHTML = '';
+            for (let clientId in clients) {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${clientId}: ${clients[clientId].score} points`;
+                leaderboardList.appendChild(listItem);
+            }
+        });
+
+        window.onload = initGame;
     </script>
 </body>
 </html>
