@@ -17,18 +17,20 @@ io.on('connection', (socket) => {
     socket.on('createRoom', () => {
         const roomId = uuidv4();
         rooms[roomId] = {
-            clients: [socket.id],
+            clients: {},
             currentClueIndex: 0
         };
+        rooms[roomId].clients[socket.id] = { score: 0 };
         socket.join(roomId);
         socket.emit('roomCreated', roomId);
     });
 
     socket.on('joinRoom', (roomId) => {
         if (rooms[roomId]) {
-            rooms[roomId].clients.push(socket.id);
+            rooms[roomId].clients[socket.id] = { score: 0 };
             socket.join(roomId);
             socket.emit('roomJoined', roomId);
+            io.to(roomId).emit('updateLeaderboard', rooms[roomId].clients);
         } else {
             socket.emit('error', 'Room not found');
         }
@@ -37,7 +39,9 @@ io.on('connection', (socket) => {
     socket.on('correctAnswer', (answer) => {
         const roomId = Object.keys(socket.rooms).filter(item => item !== socket.id)[0];
         if (rooms[roomId]) {
+            rooms[roomId].clients[socket.id].score++;
             io.to(roomId).emit('correctAnswer', answer);
+            io.to(roomId).emit('updateLeaderboard', rooms[roomId].clients);
         }
     });
 
@@ -45,7 +49,11 @@ io.on('connection', (socket) => {
         const roomId = Object.keys(socket.rooms).filter(item => item !== socket.id)[0];
         if (rooms[roomId]) {
             rooms[roomId].currentClueIndex = 0;
+            for (let client in rooms[roomId].clients) {
+                rooms[roomId].clients[client].score = 0;
+            }
             io.to(roomId).emit('resetGame');
+            io.to(roomId).emit('updateLeaderboard', rooms[roomId].clients);
         }
     });
 
@@ -53,9 +61,11 @@ io.on('connection', (socket) => {
         console.log('Client disconnected');
         const roomId = Object.keys(socket.rooms).filter(item => item !== socket.id)[0];
         if (rooms[roomId]) {
-            rooms[roomId].clients = rooms[roomId].clients.filter(id => id !== socket.id);
-            if (rooms[roomId].clients.length === 0) {
+            delete rooms[roomId].clients[socket.id];
+            if (Object.keys(rooms[roomId].clients).length === 0) {
                 delete rooms[roomId];
+            } else {
+                io.to(roomId).emit('updateLeaderboard', rooms[roomId].clients);
             }
         }
     });
