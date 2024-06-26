@@ -10,79 +10,13 @@
         }
         .container {
             display: flex;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 80%;
-            max-width: 900px;
+            flex-direction: row;
+            justify-content: space-between;
+            margin: 20px;
         }
-        .correct-answers {
-            margin-right: 20px;
-            padding: 10px;
-            border-right: 1px solid #ccc;
-            flex: 1;
+        .game {
+            width: 70%;
         }
-        .correct-answers h2 {
-            margin-top: 0;
-        }
-        .game-area {
-            text-align: center;
-            flex: 2;
-        }
-        h1 {
-            color: #333;
-            margin-top: 0;
-        }
-        input[type="text"] {
-            padding: 10px;
-            width: 300px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-bottom: 10px;
-        }
-        button {
-            padding: 10px 20px;
-            border: none;
-            background-color: #28a745;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .result, .score {
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .progress-bar {
-            width: 100%;
-            background-color: #e0e0e0;
-            border-radius: 5px;
-            overflow: hidden;
-            margin-top: 20px;
-        }
-        .progress {
-            height: 20px;
-            background-color: #28a745;
-            width: 0;
-        }
-        .hint {
-            margin-top: 10px;
-            font-size: 16px;
-            color: #555;
-        }
-        .reset-btn {
-            margin-top: 20px;
-            padding: 10px 20px;
-            border: none;
-            background-color: #dc3545;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-         }
         .leaderboard {
             width: 25%;
             border-left: 2px solid #000;
@@ -113,9 +47,6 @@
             width: 0;
             height: 20px;
             background-color: green;
-        }
-        .reset-btn:hover {
-            background-color: #c82333;
         }
     </style>
 </head>
@@ -152,33 +83,7 @@
         const clues = [
             { clue: "I have black and white stripes.", answer: "zebra" },
             { clue: "I am the king of the jungle.", answer: "lion" },
-            { clue: "I am the largest mammal on earth.", answer: "whale" },
-            { clue: "I am a bird that cannot fly.", answer: "penguin" },
-            { clue: "I have a long trunk and big ears.", answer: "elephant" },
-            { clue: "I am the fastest land animal.", answer: "cheetah" },
-            { clue: "I am a domesticated animal known for barking.", answer: "dog" },
-            { clue: "I am known for my ability to change colors.", answer: "chameleon" },
-            { clue: "I am a large bear-like animal known for eating bamboo.", answer: "panda" },
-            { clue: "I am a large reptile with a powerful bite.", answer: "crocodile" },
-            { clue: "I am a small, hopping mammal with long ears.", answer: "rabbit" },
-            { clue: "I am a flightless bird native to Australia.", answer: "emu" },
-            { clue: "I am a sea creature with eight legs.", answer: "octopus" },
-            { clue: "I am a slow-moving reptile with a shell.", answer: "turtle" },
-            { clue: "I am known for my spots and long neck.", answer: "giraffe" },
-            { clue: "I am a large cat with black rosettes on my fur.", answer: "leopard" },
-            { clue: "I am a marsupial native to Australia.", answer: "kangaroo" },
-            { clue: "I am a small, burrowing mammal with spines.", answer: "hedgehog" },
-            { clue: "I am a bird known for mimicking sounds.", answer: "parrot" },
-            { clue: "I am a large mammal with tusks and a trunk.", answer: "elephant" },
-            { clue: "I am known for building dams.", answer: "beaver" },
-            { clue: "I am a bird of prey with sharp talons.", answer: "eagle" },
-            { clue: "I am a nocturnal bird known for my hooting.", answer: "owl" },
-            { clue: "I am a large mammal known for my thick fur and hibernation.", answer: "bear" },
-            { clue: "I am a small primate known for swinging from trees.", answer: "monkey" },
-            { clue: "I am a marine mammal known for my intelligence and playfulness.", answer: "dolphin" },
-            { clue: "I am a reptile known for shedding my skin.", answer: "snake" },
-            { clue: "I am a large bird with a colorful fan-like tail.", answer: "peacock" },
-            { clue: "I am a domesticated animal known for producing milk.", answer: "cow" }
+            // Add more clues here
         ];
 
         let currentClueIndex = 0;
@@ -243,13 +148,6 @@
             } else {
                 document.getElementById('message').textContent = 'Please enter a room ID.';
             }
-
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
         }
 
         socket.on('update-leaderboard', (updatedClients) => {
