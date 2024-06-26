@@ -167,7 +167,7 @@
             leaderboardList.innerHTML = '';
             for (let clientId in clients) {
                 const listItem = document.createElement('li');
-                listItem.textContent = `${clientId}: ${clients[clientId].score} points`;
+                listItem.textContent = `${clients[clientId].name || clientId}: ${clients[clientId].score} points`;
                 leaderboardList.appendChild(listItem);
             }
         });
