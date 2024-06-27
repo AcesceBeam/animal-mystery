@@ -1,14 +1,15 @@
 {
   "name": "animal-mystery-game",
   "version": "1.0.0",
-  "description": "A multiplayer animal mystery game.",
+  "description": "A simple animal mystery game using Socket.IO and Express",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.17.1",
-    "socket.io": "^4.1.2",
-    "uuid": "^8.3.2"
-  }
+    "socket.io": "^4.0.1"
+  },
+  "author": "",
+  "license": "ISC"
 }
