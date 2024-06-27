@@ -38,26 +38,31 @@
         .guess-input {
             margin-bottom: 10px;
         }
+
         .progress-bar {
-            width: 100%;
-            background-color: #f3f3f3;
-            border: 1px solid #ccc;
-        }
-        .progress {
+             width: 100%;
+             height: 20px;
+             background-color: #000; 
+             border-radius: 10px; 
+             overflow: hidden; 
+         }
+
+         .progress {
             width: 0;
-            height: 20px;
-            background-color: green;
-        }
+            height: 100%;
+            background: linear-gradient(90deg, green, blue, purple, red); /* Gradient background */
+         }
+
         .styled-button {
             background: linear-gradient(90deg, #3b82f6, #a855f7);
             border: none;
             border-radius: 8px;
             color: white;
-            padding: 10px 20px;
+            padding: 5px 10px; /* Reduced padding */
             text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 16px;
+            font-size: 14px; /* Reduced font size */
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: all 0.2s ease-in-out;
@@ -65,6 +70,20 @@
 
         .styled-button:hover {
             box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            border: none;
+            border-bottom: 2px solid #ccc;
+            width: 100%; /* Full width */
+            box-sizing: border-box; /* Make padding and border included in the element's total width and height */
+            font-size: 16px; /* Increased font size */
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-bottom: 2px solid #3b82f6; /* Focus border color */
         }
     </style>
 </head>
