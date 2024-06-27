@@ -4,265 +4,252 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Animal Mystery Game</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-        }
-        .container {
+            font-family: 'Roboto', sans-serif;
             display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            margin: 20px;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #f8f9fa, #343a40);
+            color: #343a40;
         }
-        .container {
-            display: flex;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 80%;
-            max-width: 900px;
-        }
-        .correct-answers {
-            margin-right: 20px;
-            padding: 10px;
-            border-right: 1px solid #ccc;
-            flex: 1;
-        }
-        .correct-answers h2 {
-            margin-top: 0;
-        }
-        .game-area {
+        #gameContainer {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            width: 400px;
             text-align: center;
-            flex: 2;
         }
         h1 {
-            color: #333;
-            margin-top: 0;
+            margin: 0 0 20px;
+            font-size: 24px;
+            color: #007bff;
         }
-        input[type="text"] {
-            padding: 10px;
-            width: 300px;
+        #messages {
+            height: 200px;
+            overflow-y: scroll;
             border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-bottom: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            background-color: #fafafa;
         }
-        button {
+        #input {
+            display: flex;
+            margin-top: 10px;
+        }
+        #messageInput {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        #sendButton {
             padding: 10px 20px;
             border: none;
             background-color: #28a745;
             color: white;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
-        button:hover {
+        #sendButton:hover {
             background-color: #218838;
         }
-        .result, .score {
-            margin-top: 20px;
-            font-size: 18px;
+        #controls {
+            margin-bottom: 20px;
+        }
+        #controls button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #controls button:hover {
+            background-color: #0056b3;
+        }
+        #roomInput, #nameInput {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        #score {
+            margin: 10px 0;
             font-weight: bold;
         }
-        .progress-bar {
-            width: 100%;
-            background-color: #e0e0e0;
-            border-radius: 5px;
-            overflow: hidden;
-            margin-top: 20px;
+        #leaderboard {
+            margin: 10px 0;
+            text-align: left;
         }
-        .progress {
-            height: 20px;
-            background-color: #28a745;
-            width: 0;
-        }
-        .hint {
-            margin-top: 10px;
-            font-size: 16px;
-            color: #555;
-        }
-        .reset-btn {
-            margin-top: 20px;
-            padding: 10px 20px;
-            border: none;
-            background-color: #dc3545;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .reset-btn:hover {
-            background-color: #c82333;
-        }
-        .leaderboard {
-            width: 25%;
-            border-left: 2px solid #000;
-            padding-left: 10px;
-        }
-        .leaderboard h2 {
-            text-align: center;
-        }
-        .leaderboard ul {
-            list-style: none;
-            padding: 0;
-        }
-        .leaderboard li {
-            margin: 5px 0;
-        }
-        .message {
-            color: green;
-        }
-        .guess-input {
-            margin-bottom: 10px;
-        }
-        .progress-bar {
-            width: 100%;
-            background-color: #f3f3f3;
-            border: 1px solid #ccc;
-        }
-        .progress {
-            width: 0;
-            height: 20px;
-            background-color: green;
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
         }
     </style>
 </head>
 <body>
-    <h1>Animal Mystery Game</h1>
-    <div class="container">
-        <div class="game">
-            <div id="clue">I have black and white stripes.</div>
-            <div class="guess-input">
-                <input type="text" id="guess" placeholder="Your guess">
-                <button onclick="checkGuess()">Submit</button>
-            </div>
-            <div id="message" class="message"></div>
-            <div id="correct-answers"></div>
-            <div class="progress-bar">
-                <div id="progress" class="progress"></div>
-            </div>
-            <div>
-                <button onclick="resetGame()">Reset Game</button>
-                <button onclick="createRoom()">Create Room</button>
-                <input type="text" id="room-id" placeholder="Room ID">
-                <button onclick="joinRoom()">Join Room</button>
-            </div>
+    <div id="gameContainer">
+        <h1>Animal Mystery Game</h1>
+        <div id="controls">
+            <input id="nameInput" type="text" placeholder="Enter your name">
+            <button id="createRoomButton">Create Room</button>
+            <input id="roomInput" type="text" placeholder="Enter Room ID">
+            <button id="joinRoomButton">Join Room</button>
         </div>
-        <div class="leaderboard">
-            <h2>Leaderboard</h2>
-            <ul id="leaderboard-list"></ul>
+        <div id="score">Score: <span id="scoreValue">0</span></div>
+        <div id="leaderboard">
+            <h3>Leaderboard</h3>
+            <div id="leaderboardList"></div>
+        </div>
+        <div id="messages"></div>
+        <div id="clue" style="margin-bottom: 20px;"></div>
+        <div id="input" style="display:none;">
+            <input id="messageInput" type="text" placeholder="Enter your guess" autofocus>
+            <button id="sendButton"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-        const socket = io();
 
-        const clues = [
-            { clue: "I have black and white stripes.", answer: "zebra" },
-            { clue: "I am the king of the jungle.", answer: "lion" },
-            { clue: "I am the largest mammal on earth.", answer: "whale" },
-            { clue: "I am a bird that cannot fly.", answer: "penguin" },
-            { clue: "I have a long trunk and big ears.", answer: "elephant" },
-            { clue: "I am the fastest land animal.", answer: "cheetah" },
-            { clue: "I am a domesticated animal known for barking.", answer: "dog" },
-            { clue: "I am known for my ability to change colors.", answer: "chameleon" },
-            { clue: "I am a large bear-like animal known for eating bamboo.", answer: "panda" },
-            { clue: "I am a large reptile with a powerful bite.", answer: "crocodile" },
-            { clue: "I am a small, hopping mammal with long ears.", answer: "rabbit" },
-            { clue: "I am a flightless bird native to Australia.", answer: "emu" },
-            { clue: "I am a sea creature with eight legs.", answer: "octopus" },
-            { clue: "I am a slow-moving reptile with a shell.", answer: "turtle" },
-            { clue: "I am known for my spots and long neck.", answer: "giraffe" },
-            { clue: "I am a large cat with black rosettes on my fur.", answer: "leopard" },
-            { clue: "I am a marsupial native to Australia.", answer: "kangaroo" },
-            { clue: "I am a small, burrowing mammal with spines.", answer: "hedgehog" },
-            { clue: "I am a bird known for mimicking sounds.", answer: "parrot" },
-            { clue: "I am a large mammal with tusks and a trunk.", answer: "elephant" },
-            { clue: "I am known for building dams.", answer: "beaver" },
-            { clue: "I am a bird of prey with sharp talons.", answer: "eagle" },
-            { clue: "I am a nocturnal bird known for my hooting.", answer: "owl" },
-            { clue: "I am a large mammal known for my thick fur and hibernation.", answer: "bear" },
-            { clue: "I am a small primate known for swinging from trees.", answer: "monkey" },
-            { clue: "I am a marine mammal known for my intelligence and playfulness.", answer: "dolphin" },
-            { clue: "I am a reptile known for shedding my skin.", answer: "snake" },
-            { clue: "I am a large bird with a colorful fan-like tail.", answer: "peacock" },
-            { clue: "I am a domesticated animal known for producing milk.", answer: "cow" }
+    <script>
+        const cluesAndAnswers = [
+            { name: 'lion', clue: 'I am the king of the jungle' },
+            { name: 'elephant', clue: 'I have a long trunk' },
+            { name: 'giraffe', clue: 'I have a very long neck' },
+            { name: 'tiger', clue: 'I have stripes and I am fierce' },
+            { name: 'zebra', clue: 'I look like a horse with stripes' },
+            { name: 'dog', clue: 'I am known as man’s best friend' },
+            { name: 'cat', clue: 'I purr and love to chase mice' },
+            { name: 'wolf', clue: 'I am the ancestor of the domestic dog' },
+            { name: 'fox', clue: 'I am cunning and have a bushy tail' },
+            { name: 'bear', clue: 'I am big, strong, and love honey' },
+            { name: 'koala', clue: 'I am a marsupial from Australia' },
+            { name: 'kangaroo', clue: 'I hop and have a pouch for my baby' },
+            { name: 'panda', clue: 'I am black and white and love bamboo' },
+            { name: 'rhinoceros', clue: 'I have a big horn on my nose' },
+            { name: 'hippopotamus', clue: 'I am large and live in the water' },
+            { name: 'crocodile', clue: 'I am a reptile with a strong bite' },
+            { name: 'flamingo', clue: 'I stand on one leg and am pink' },
+            { name: 'penguin', clue: 'I am a bird that cannot fly' },
+            { name: 'dolphin', clue: 'I am intelligent and live in the ocean' },
+            { name: 'whale', clue: 'I am the largest mammal in the ocean' },
+            { name: 'shark', clue: 'I have sharp teeth and am a top predator' },
+            { name: 'eagle', clue: 'I soar high and have excellent vision' },
+            { name: 'owl', clue: 'I am nocturnal and can turn my head around' },
+            { name: 'peacock', clue: 'I have beautiful and colorful feathers' },
+            { name: 'parrot', clue: 'I can mimic human speech' },
+            { name: 'monkey', clue: 'I am playful and love to swing in trees' },
+            { name: 'cheetah', clue: 'I am the fastest land animal' },
+            { name: 'leopard', clue: 'I am known for my beautiful spots' },
+            { name: 'buffalo', clue: 'I am strong and have large horns' },
+            { name: 'camel', clue: 'I have humps and live in the desert' },
         ];
 
-        let currentClueIndex = 0;
-        let correctAnswers = 0;
-        let clients = {};
+        let currentClue = '';
+        let currentAnswer = '';
+        let playerName = '';
+        let roomId = '';
+        let score = 0;
 
-        function initGame() {
-            document.getElementById('clue').textContent = clues[currentClueIndex].clue;
-            document.getElementById('message').textContent = '';
-            document.getElementById('correct-answers').textContent = '';
-            document.getElementById('progress').style.width = '0%';
+        function shuffleCluesAndAnswers() {
+            const randomItem = cluesAndAnswers[Math.floor(Math.random() * cluesAndAnswers.length)];
+            currentClue = randomItem.clue;
+            currentAnswer = randomItem.name;
         }
 
-        function checkGuess() {
-            const guess = document.getElementById('guess').value.toLowerCase();
-            const message = document.getElementById('message');
-            const correctAnswerElement = document.getElementById('correct-answers');
+        const socket = io();
 
-            if (guess === clues[currentClueIndex].answer.toLowerCase()) {
-                message.textContent = 'Correct!';
-                correctAnswerElement.textContent += `${clues[currentClueIndex].answer}\n`;
-                correctAnswers++;
-                socket.emit('update-score', correctAnswers);
-                nextClue();
-            } else {
-                message.textContent = 'Try again!';
+        document.getElementById('createRoomButton').onclick = () => {
+            playerName = document.getElementById('nameInput').value.trim();
+            if (!playerName) {
+                alert('Please enter your name');
+                return;
             }
-            document.getElementById('guess').value = '';
-        }
+            socket.emit('createRoom');
+        };
 
-        function nextClue() {
-            currentClueIndex++;
-            if (currentClueIndex < clues.length) {
-                document.getElementById('clue').textContent = clues[currentClueIndex].clue;
-                document.getElementById('progress').style.width = `${(currentClueIndex / clues.length) * 100}%`;
-            } else {
-                document.getElementById('message').textContent = 'Game over!';
-                document.getElementById('progress').style.width = '100%';
+        document.getElementById('joinRoomButton').onclick = () => {
+            roomId = document.getElementById('roomInput').value.trim();
+            playerName = document.getElementById('nameInput').value.trim();
+            if (!playerName || !roomId) {
+                alert('Please enter your name and room ID');
+                return;
             }
-        }
+            socket.emit('joinRoom', { roomId, playerName });
+        };
 
-        function resetGame() {
-            currentClueIndex = 0;
-            correctAnswers = 0;
-            initGame();
-            socket.emit('reset-game');
-        }
+        socket.on('roomCreated', (id) => {
+            roomId = id;
+            socket.emit('joinRoom', { roomId, playerName });
+        });
 
-        function createRoom() {
-            const roomID = Math.random().toString(36).substring(2, 9);
-            socket.emit('create-room', roomID);
-            document.getElementById('room-id').value = roomID;
-            document.getElementById('message').textContent = `Room created with ID: ${roomID}`;
-            joinRoom(roomID);
-        }
+        socket.on('roomJoined', (clue) => {
+            document.getElementById('controls').style.display = 'none';
+            document.getElementById('input').style.display = 'flex';
+            shuffleCluesAndAnswers();
+            document.getElementById('clue').innerHTML = `<div>Clue: ${currentClue}</div>`;
+        });
 
-        function joinRoom() {
-            const roomID = document.getElementById('room-id').value;
-            if (roomID) {
-                socket.emit('join-room', roomID);
-                document.getElementById('message').textContent = `Successfully joined room: ${roomID}`;
-            } else {
-                document.getElementById('message').textContent = 'Please enter a room ID.';
-            }
-        }
+        socket.on('message', (msg) => {
+            const messages = document.getElementById('messages');
+            const messageElement = document.createElement('div');
+            messageElement.textContent = msg;
+            messages.appendChild(messageElement);
+            messages.scrollTop = messages.scrollHeight;
+        });
 
-        socket.on('update-leaderboard', (updatedClients) => {
-            clients = updatedClients;
-            const leaderboardList = document.getElementById('leaderboard-list');
+        socket.on('updateLeaderboard', (scores) => {
+            const leaderboardList = document.getElementById('leaderboardList');
             leaderboardList.innerHTML = '';
-            for (let clientId in clients) {
-                const listItem = document.createElement('li');
-                listItem.textContent = `${clients[clientId].name || clientId}: ${clients[clientId].score} points`;
-                leaderboardList.appendChild(listItem);
+            for (let player in scores) {
+                const item = document.createElement('div');
+                item.className = 'leaderboard-item';
+                item.innerHTML = `<span>${player}</span><span>${scores[player]}</span>`;
+                leaderboardList.appendChild(item);
             }
         });
 
-        window.onload = initGame;
+        socket.on('newClue', (clue) => {
+            currentClue = clue;
+            const clueElement = document.getElementById('clue');
+            clueElement.innerHTML = `New Clue: ${clue}`;
+        });
+
+        document.getElementById('sendButton').onclick = () => {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim().toLowerCase();
+            const guessWords = message.split(' ');
+            const correctWords = currentAnswer.split(' ');
+
+            let correctCount = 0;
+            guessWords.forEach((word, index) => {
+                if (correctWords[index] === word) {
+                    correctCount++;
+                }
+            });
+
+            if (correctCount === correctWords.length) {
+                score += 10;
+                document.getElementById('scoreValue').textContent = score;
+                socket.emit('correctGuess', { playerName, score, roomId });
+                shuffleCluesAndAnswers();
+                socket.emit('newClue', { clue: currentClue, roomId });
+                document.getElementById('messages').innerHTML += `<div>Correct! The mystery animal was: ${currentAnswer}</div>`;
+            } else if (correctCount > 0) {
+                document.getElementById('messages').innerHTML += `<div style="color:yellow;">Almost correct! ${correctCount} word(s) correct, but check your spelling.</div>`;
+            } else {
+                document.getElementById('messages').innerHTML += `<div>Incorrect guess. Try again!</div>`;
+            }
+            messageInput.value = '';
+        };
     </script>
 </body>
 </html>
