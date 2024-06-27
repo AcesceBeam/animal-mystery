@@ -48,6 +48,24 @@
             height: 20px;
             background-color: green;
         }
+        .styled-button {
+            background: linear-gradient(90deg, #3b82f6, #a855f7);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .styled-button:hover {
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -57,7 +75,7 @@
             <div id="clue">I have black and white stripes.</div>
             <div class="guess-input">
                 <input type="text" id="guess" placeholder="Your guess">
-                <button onclick="checkGuess()">Submit</button>
+                <button class="styled-button" onclick="checkGuess()">Submit</button>
             </div>
             <div id="message" class="message"></div>
             <div id="correct-answers"></div>
@@ -65,10 +83,10 @@
                 <div id="progress" class="progress"></div>
             </div>
             <div>
-                <button onclick="resetGame()">Reset Game</button>
-                <button onclick="createRoom()">Create Room</button>
+                <button class="styled-button" onclick="resetGame()">Reset Game</button>
+                <button class="styled-button" onclick="createRoom()">Create Room</button>
                 <input type="text" id="room-id" placeholder="Room ID">
-                <button onclick="joinRoom()">Join Room</button>
+                <button class="styled-button" onclick="joinRoom()">Join Room</button>
             </div>
         </div>
         <div class="leaderboard">
@@ -84,48 +102,45 @@
             { clue: "I have black and white stripes.", answer: "zebra" },
             { clue: "I am the king of the jungle.", answer: "lion" },
             { clue: "I am known for my long neck.", answer: "giraffe" },
-{ clue: "I am the largest mammal in the ocean.", answer: "whale" },
-{ clue: "I am famous for my black and white stripes.", answer: "zebra" },
-{ clue: "I am a bird that cannot fly but can swim very well.", answer: "penguin" },
-{ clue: "I have a pouch and hop around.", answer: "kangaroo" },
-{ clue: "I am the largest land animal and I have big tusks.", answer: "elephant" },
-{ clue: "I am known for my ability to change colors.", answer: "chameleon" },
-{ clue: "I have a mane and roar loudly and King.", answer: "lion" },
-{ clue: "I have black rings around my eyes and eat bamboo.", answer: "panda" },
-{ clue: "I swing from tree to tree using my long arms.", answer: "monkey" },
-{ clue: "I am a bird known for my colorful feathers and ability to mimic sounds.", answer: "parrot" },
-{ clue: "I have a trunk and large ears.", answer: "elephant" },
-{ clue: "I have a shell on my back and move slowly.", answer: "turtle" },
-{ clue: "I am a marine creature with eight arms.", answer: "octopus" },
-{ clue: "I am a large mammal with a hump on my back.", answer: "camel" },
-{ clue: "I am a nocturnal bird known for my hooting.", answer: "owl" },
-{ clue: "I am a striped member of the horse family.", answer: "zebra" },
-{ clue: "I am a large reptile that can live both in water and on land.", answer: "crocodile" },
-{ clue: "I am a bird of prey known for my sharp vision.", answer: "eagle" },
-{ clue: "I am an insect known for making honey.", answer: "bee" },
-{ clue: "I am a marine mammal known for my intelligence and playful behavior.", answer: "dolphin" },
-{ clue: "I am a small, burrowing mammal with long ears and I am faster.", answer: "rabbit" },
-{ clue: "I am a large mammal known for my impressive antlers and I will be hunted by a Lion.", answer: "deer" },
-{ clue: "I am a marine animal with a hard shell and pincers.", answer: "crab" },
-{ clue: "I am a tiny insect known for my colony structure.", answer: "ant" },
-{ clue: "I am a bird known for my flight and ability to hover.", answer: "hummingbird" },
-{ clue: "I am a mammal known for my mask-like face and bushy tail and look like a robber.", answer: "raccoon" },
-{ clue: "I am a domesticated animal known for giving milk.", answer: "cow" },
-{ clue: "I am a small rodent known for my cheek pouches.", answer: "hamster" },
-{ clue: "I am a large bird known for my long legs and neck.", answer: "ostrich" }
+            { clue: "I am the largest mammal in the ocean.", answer: "whale" },
+            { clue: "I am famous for my black and white stripes.", answer: "zebra" },
+            { clue: "I am a bird that cannot fly but can swim very well.", answer: "penguin" },
+            { clue: "I have a pouch and hop around.", answer: "kangaroo" },
+            { clue: "I am the largest land animal and I have big tusks.", answer: "elephant" },
+            { clue: "I am known for my ability to change colors.", answer: "chameleon" },
+            { clue: "I have a mane and roar loudly and King.", answer: "lion" },
+            { clue: "I have black rings around my eyes and eat bamboo.", answer: "panda" },
+            { clue: "I swing from tree to tree using my long arms.", answer: "monkey" },
+            { clue: "I am a bird known for my colorful feathers and ability to mimic sounds.", answer: "parrot" },
+            { clue: "I have a trunk and large ears.", answer: "elephant" },
+            { clue: "I have a shell on my back and move slowly.", answer: "turtle" },
+            { clue: "I am a marine creature with eight arms.", answer: "octopus" },
+            { clue: "I am a large mammal with a hump on my back.", answer: "camel" },
+            { clue: "I am a nocturnal bird known for my hooting.", answer: "owl" },
+            { clue: "I am a striped member of the horse family.", answer: "zebra" },
+            { clue: "I am a large reptile that can live both in water and on land.", answer: "crocodile" },
+            { clue: "I am a bird of prey known for my sharp vision.", answer: "eagle" },
+            { clue: "I am an insect known for making honey.", answer: "bee" },
+            { clue: "I am a marine mammal known for my intelligence and playful behavior.", answer: "dolphin" },
+            { clue: "I am a small, burrowing mammal with long ears and I am faster.", answer: "rabbit" },
+            { clue: "I am a large mammal known for my impressive antlers and I will be hunted by a Lion.", answer: "deer" },
+            { clue: "I am a marine animal with a hard shell and pincers.", answer: "crab" },
+            { clue: "I am a tiny insect known for my colony structure.", answer: "ant" },
+            { clue: "I am a bird known for my flight and ability to hover.", answer: "hummingbird" },
+            { clue: "I am a mammal known for my mask-like face and bushy tail and look like a robber.", answer: "raccoon" },
+            { clue: "I am a domesticated animal known for giving milk.", answer: "cow" },
+            { clue: "I am a small rodent known for my cheek pouches.", answer: "hamster" },
+            { clue: "I am a large bird known for my long legs and neck.", answer: "ostrich" },
             { clue: "I am known for my howling at the moon.", answer: "wolf" },
-{ clue: "I am a large cat known for my beautiful orange and black stripes.", answer: "tiger" },
-{ clue: "I am a slow-moving marine animal with a shell and can live both in water and on land.", answer: "turtle" },
-{ clue: "I am known for my playful jumping and frolicking in fields.", answer: "lamb" },
-{ clue: "I am a farm animal known for giving wool.", answer: "sheep" },
-{ clue: "I am a bird of prey known for my ability to rotate my head almost completely around.", answer: "owl" },
-{ clue: "I am a black and white marine animal that is also known as a killer whale.", answer: "orca" },
-{ clue: "I am a small insect known for my ability to jump long distances and make chirping sounds.", answer: "cricket" },
-{ clue: "I am a large fish known for my ability to leap out of water.", answer: "salmon" },
-{ clue: "I am a small animal known for my love of cheese and being a common household pest.", answer: "mouse" }
-
-
-            // Add more clues here
+            { clue: "I am a large cat known for my beautiful orange and black stripes.", answer: "tiger" },
+            { clue: "I am a slow-moving marine animal with a shell and can live both in water and on land.", answer: "turtle" },
+            { clue: "I am known for my playful jumping and frolicking in fields.", answer: "lamb" },
+            { clue: "I am a farm animal known for giving wool.", answer: "sheep" },
+            { clue: "I am a bird of prey known for my ability to rotate my head almost completely around.", answer: "owl" },
+            { clue: "I am a black and white marine animal that is also known as a killer whale.", answer: "orca" },
+            { clue: "I am a small insect known for my ability to jump long distances and make chirping sounds.", answer: "cricket" },
+            { clue: "I am a large fish known for my ability to leap out of water.", answer: "salmon" },
+            { clue: "I am a small animal known for my love of cheese and being a common household pest.", answer: "mouse" }
         ];
 
         let currentClueIndex = 0;
