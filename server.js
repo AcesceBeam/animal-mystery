@@ -18,28 +18,26 @@ io.on('connection', (socket) => {
         let roomId = Math.random().toString(36).substring(2, 7);
         rooms[roomId] = { players: {}, currentClue: '' };
         socket.join(roomId);
-        clients[socket.id] = { score: 0, room: roomId };
+        clients[socket.id] = { score: 0, room: roomId, name: '' };
         socket.emit('roomCreated', roomId);
-        io.to(roomId).emit('update-leaderboard', rooms[roomId].players);
         console.log(`Room ${roomId} created`);
     });
 
-    socket.on('join-room', (roomId) => {
+    socket.on('join-room', ({ roomId, playerName }) => {
         if (rooms[roomId]) {
             socket.join(roomId);
-            rooms[roomId].players[socket.id] = { score: 0 };
-            clients[socket.id] = { score: 0, room: roomId };
+            rooms[roomId].players[socket.id] = { score: 0, name: playerName };
+            clients[socket.id] = { score: 0, room: roomId, name: playerName };
             socket.emit('roomJoined', rooms[roomId].currentClue);
             io.to(roomId).emit('update-leaderboard', rooms[roomId].players);
-            console.log(`Player joined room ${roomId}`);
+            console.log(`Player ${playerName} joined room ${roomId}`);
         } else {
             socket.emit('error', 'Room does not exist');
         }
     });
 
-    socket.on('correctGuess', (score) => {
-        const roomId = clients[socket.id]?.room;
-        if (roomId && rooms[roomId]) {
+    socket.on('correctGuess', ({ playerName, score, roomId }) => {
+        if (rooms[roomId]) {
             rooms[roomId].players[socket.id].score = score;
             clients[socket.id].score = score;
             io.to(roomId).emit('update-leaderboard', rooms[roomId].players);
