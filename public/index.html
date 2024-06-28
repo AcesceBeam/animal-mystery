@@ -10,73 +10,56 @@
         }
         .container {
             display: flex;
-            flex-direction: row;
-            justify-content: space-between;
+            flex-direction: column;
             margin: 20px;
         }
         .game {
-            width: 70%;
-        }
-        .leaderboard {
-            width: 25%;
-            border-left: 2px solid #000;
-            padding-left: 10px;
-        }
-        .leaderboard h2 {
-            text-align: center;
-        }
-        .leaderboard ul {
-            list-style: none;
-            padding: 0;
-        }
-        .leaderboard li {
-            margin: 5px 0;
+            width: 100%;
         }
         .message {
             color: green;
         }
-        .guess-input {
+        .guess-input, .player-input, .room-input {
             margin-bottom: 10px;
         }
-
         .progress-bar {
-             width: 100%;
-             height: 20px;
-             background-color: #000; 
-             border-radius: 10px; 
-             overflow: hidden; 
-         }
-
-         .progress {
+            width: 100%;
+            height: 20px;
+            background-color: #000;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress {
             width: 0;
             height: 100%;
-            background: linear-gradient(90deg, green, blue, purple, red); /* Gradient background */
-         }
-
+            background: linear-gradient(90deg, green, blue, purple);
+        }
         .styled-button {
             background: linear-gradient(90deg, #3b82f6, #a855f7);
             border: none;
             border-radius: 8px;
             color: white;
-            padding: 5px 10px; /* Reduced padding */
+            padding: 5px 10px;
             text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 14px; /* Reduced font size */
+            font-size: 14px;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: all 0.2s ease-in-out;
         }
-
         .styled-button:hover {
             box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
         }
+        .player-info {
+            margin-top: 20px;
+        }
 
-        input[type="text"] {
+            input[type="text"] {
             padding: 8px;
             border: none;
             border-bottom: 2px solid #ccc;
-            width: 100%; /* Full width */
+            width: 50%; /* Full width */
             box-sizing: border-box; /* Make padding and border included in the element's total width and height */
             font-size: 16px; /* Increased font size */
         }
@@ -87,10 +70,17 @@
         }
     </style>
 </head>
-<body>
+<body align=center>
     <h1>Animal Mystery Game</h1>
     <div class="container">
         <div class="game">
+            <div class="player-input">
+                <input type="text" id="player-name" placeholder="Enter your name">
+            </div>
+            <div class="room-input">
+                <input type="text" id="room-id" placeholder="Room ID">
+                <button class="styled-button" onclick="joinRoom()">Join Room</button>
+            </div>
             <div id="clue">I have black and white stripes.</div>
             <div class="guess-input">
                 <input type="text" id="guess" placeholder="Your guess">
@@ -104,13 +94,11 @@
             <div>
                 <button class="styled-button" onclick="resetGame()">Reset Game</button>
                 <button class="styled-button" onclick="createRoom()">Create Room</button>
-                <input type="text" id="room-id" placeholder="Room ID">
-                <button class="styled-button" onclick="joinRoom()">Join Room</button>
             </div>
         </div>
-        <div class="leaderboard">
-            <h2>Leaderboard</h2>
-            <ul id="leaderboard-list"></ul>
+        <div class="player-info">
+            <h2>Players</h2>
+            <ul id="player-list"></ul>
         </div>
     </div>
     <script src="/socket.io/socket.io.js"></script>
@@ -122,37 +110,33 @@
             { clue: "I am the king of the jungle.", answer: "lion" },
             { clue: "I am known for my long neck.", answer: "giraffe" },
             { clue: "I am the largest mammal in the ocean.", answer: "whale" },
-            { clue: "I am famous for my black and white stripes.", answer: "zebra" },
             { clue: "I am a bird that cannot fly but can swim very well.", answer: "penguin" },
             { clue: "I have a pouch and hop around.", answer: "kangaroo" },
             { clue: "I am the largest land animal and I have big tusks.", answer: "elephant" },
             { clue: "I am known for my ability to change colors.", answer: "chameleon" },
-            { clue: "I have a mane and roar loudly and King.", answer: "lion" },
             { clue: "I have black rings around my eyes and eat bamboo.", answer: "panda" },
             { clue: "I swing from tree to tree using my long arms.", answer: "monkey" },
             { clue: "I am a bird known for my colorful feathers and ability to mimic sounds.", answer: "parrot" },
-            { clue: "I have a trunk and large ears.", answer: "elephant" },
             { clue: "I have a shell on my back and move slowly.", answer: "turtle" },
             { clue: "I am a marine creature with eight arms.", answer: "octopus" },
             { clue: "I am a large mammal with a hump on my back.", answer: "camel" },
             { clue: "I am a nocturnal bird known for my hooting.", answer: "owl" },
-            { clue: "I am a striped member of the horse family.", answer: "zebra" },
             { clue: "I am a large reptile that can live both in water and on land.", answer: "crocodile" },
             { clue: "I am a bird of prey known for my sharp vision.", answer: "eagle" },
             { clue: "I am an insect known for making honey.", answer: "bee" },
             { clue: "I am a marine mammal known for my intelligence and playful behavior.", answer: "dolphin" },
-            { clue: "I am a small, burrowing mammal with long ears and I am faster.", answer: "rabbit" },
-            { clue: "I am a large mammal known for my impressive antlers and I will be hunted by a Lion.", answer: "deer" },
+            { clue: "I am a small, burrowing mammal with long ears.", answer: "rabbit" },
+            { clue: "I am a large mammal known for my impressive antlers.", answer: "deer" },
             { clue: "I am a marine animal with a hard shell and pincers.", answer: "crab" },
             { clue: "I am a tiny insect known for my colony structure.", answer: "ant" },
             { clue: "I am a bird known for my flight and ability to hover.", answer: "hummingbird" },
-            { clue: "I am a mammal known for my mask-like face and bushy tail and look like a robber.", answer: "raccoon" },
+            { clue: "I am a mammal known for my mask-like face and bushy tail.", answer: "raccoon" },
             { clue: "I am a domesticated animal known for giving milk.", answer: "cow" },
             { clue: "I am a small rodent known for my cheek pouches.", answer: "hamster" },
             { clue: "I am a large bird known for my long legs and neck.", answer: "ostrich" },
             { clue: "I am known for my howling at the moon.", answer: "wolf" },
             { clue: "I am a large cat known for my beautiful orange and black stripes.", answer: "tiger" },
-            { clue: "I am a slow-moving marine animal with a shell and can live both in water and on land.", answer: "turtle" },
+            { clue: "I am a slow-moving marine animal with a shell.", answer: "turtle" },
             { clue: "I am known for my playful jumping and frolicking in fields.", answer: "lamb" },
             { clue: "I am a farm animal known for giving wool.", answer: "sheep" },
             { clue: "I am a bird of prey known for my ability to rotate my head almost completely around.", answer: "owl" },
@@ -164,7 +148,6 @@
 
         let currentClueIndex = 0;
         let correctAnswers = 0;
-        let clients = {};
 
         function initGame() {
             document.getElementById('clue').textContent = clues[currentClueIndex].clue;
@@ -175,14 +158,20 @@
 
         function checkGuess() {
             const guess = document.getElementById('guess').value.toLowerCase();
+            const playerName = document.getElementById('player-name').value;
             const message = document.getElementById('message');
             const correctAnswerElement = document.getElementById('correct-answers');
+
+            if (!playerName) {
+                message.textContent = 'Please enter your name';
+                return;
+            }
 
             if (guess === clues[currentClueIndex].answer.toLowerCase()) {
                 message.textContent = 'Correct!';
                 correctAnswerElement.textContent += `${clues[currentClueIndex].answer}\n`;
                 correctAnswers++;
-                socket.emit('update-score', correctAnswers);
+                socket.emit('correctGuess', { playerName, score: correctAnswers, roomId: clients[socket.id].room });
                 nextClue();
             } else {
                 message.textContent = 'Try again!';
@@ -194,10 +183,10 @@
             currentClueIndex++;
             if (currentClueIndex < clues.length) {
                 document.getElementById('clue').textContent = clues[currentClueIndex].clue;
-                document.getElementById('progress').style.width = `${(currentClueIndex / clues.length) * 100}%`;
+                const progress = (currentClueIndex / clues.length) * 100;
+                document.getElementById('progress').style.width = progress + '%';
             } else {
-                document.getElementById('message').textContent = 'Game over!';
-                document.getElementById('progress').style.width = '100%';
+                document.getElementById('message').textContent = 'Game Over! You guessed all the animals!';
             }
         }
 
@@ -209,35 +198,39 @@
         }
 
         function createRoom() {
-            const roomID = Math.random().toString(36).substring(2, 9);
-            socket.emit('create-room', roomID);
-            document.getElementById('room-id').value = roomID;
-            document.getElementById('message').textContent = `Room created with ID: ${roomID}`;
-            joinRoom(roomID);
+            socket.emit('create-room');
         }
 
         function joinRoom() {
-            const roomID = document.getElementById('room-id').value;
-            if (roomID) {
-                socket.emit('join-room', roomID);
-                document.getElementById('message').textContent = `Successfully joined room: ${roomID}`;
-            } else {
-                document.getElementById('message').textContent = 'Please enter a room ID.';
+            const roomId = document.getElementById('room-id').value;
+            const playerName = document.getElementById('player-name').value;
+            if (!playerName) {
+                document.getElementById('message').textContent = 'Please enter your name';
+                return;
             }
+            socket.emit('join-room', { roomId, playerName });
         }
 
-        socket.on('update-leaderboard', (updatedClients) => {
-            clients = updatedClients;
-            const leaderboardList = document.getElementById('leaderboard-list');
-            leaderboardList.innerHTML = '';
-            for (let clientId in clients) {
-                const listItem = document.createElement('li');
-                listItem.textContent = `${clients[clientId].name || clientId}: ${clients[clientId].score} points`;
-                leaderboardList.appendChild(listItem);
+        socket.on('roomCreated', (roomId) => {
+            document.getElementById('room-id').value = roomId;
+        });
+
+        socket.on('roomJoined', (clue) => {
+            document.getElementById('clue').textContent = clue;
+        });
+
+        socket.on('update-leaderboard', (players) => {
+            const playerList = document.getElementById('player-list');
+            playerList.innerHTML = '';
+            for (let playerId in players) {
+                const player = players[playerId];
+                const li = document.createElement('li');
+                li.textContent = `${player.name}: ${player.score}`;
+                playerList.appendChild(li);
             }
         });
 
-        window.onload = initGame;
+        document.addEventListener('DOMContentLoaded', initGame);
     </script>
 </body>
 </html>
